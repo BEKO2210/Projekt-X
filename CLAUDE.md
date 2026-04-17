@@ -261,3 +261,225 @@ Detail: `COMPLIANCE.md`.
 Detail: `AGENTS.md`.
 
 ---
+
+## 10. Integrationsregeln
+
+**Keine Integration ohne Integrationsakte.** Jede Integration braucht vor Aktivierung:
+
+- Zweck, Anbieter, Datenfluss
+- Rechte und Scopes
+- Datenschutzprüfung, Sicherheitsprüfung
+- Secrets-Konzept (nie im Repo)
+- Sandbox
+- Feature Flag
+- Deaktivierungsmöglichkeit
+- Audit, falls kritisch
+- Rollback
+- Teststatus, Freigabestatus
+
+**Im MVP nicht aktivieren:** E-Mail-Versand, Kalendererstellung, Zahlungen, CRM, Buchhaltung, Behörden, Social-Media-Veröffentlichung, Telefonie.
+
+**Im MVP erlaubt (mit Gate):** Export lokal, optional kontrollierte Webrecherche (nur wenn Datenschutz und Quellenstatus geregelt), lokale Modelle als Konzept oder Test, Datei-Upload nur mit klaren Grenzen.
+
+Kein „mal kurz anbinden".
+
+---
+
+## 11. Umgebungsregeln
+
+Es gibt **drei** Umgebungen, technisch getrennt:
+
+**Development:**
+- nur Mock-Daten
+- keine echten Daten
+- keine echten Secrets
+- keine echte Außenwirkung
+- experimentelle Prompts erlaubt, aber markiert
+
+**Test:**
+- produktionsnah
+- synthetische Testdaten
+- Sandbox-Integrationen
+- Gate-Tests
+- keine echte Außenwirkung
+
+**Production:**
+- nur getestete Funktionen
+- nur freigegebene Agenten
+- echte Daten nur mit Datenschutz und Sicherheit
+- kritische Aktionen nur mit Bestätigung
+- Monitoring und Audit aktiv
+
+**Test und Produktion müssen technisch getrennt sein.** Dev-Only-Komponenten, Mocks, Dummy-Agenten, Test-API-Schlüssel dürfen nie aktiv in Produktion sein.
+
+Detail: `RELEASES.md`.
+
+---
+
+## 12. Feature-Flag-Regeln
+
+Riskante Funktionen müssen über Feature Flags steuerbar sein.
+
+**MVP-Flags (geplant):**
+
+- `feature.ceo_orchestrator`
+- `feature.agent_finance_light`
+- `feature.agent_privacy_light`
+- `feature.agent_document`
+- `feature.agent_quality`
+- `feature.export_markdown`
+- `feature.export_json`
+- `feature.delete_project`
+- `feature.source_status`
+- `feature.financial_plan_light`
+- `feature.privacy_mode_strict`
+- `feature.external_research`
+- `feature.email_send`
+- `feature.calendar_create`
+- `feature.payments`
+- `feature.rag`
+
+**MVP-Defaults (verbindlich):**
+
+- `feature.email_send = false`
+- `feature.calendar_create = false`
+- `feature.payments = false`
+- `feature.rag = false` oder `test_only`
+- `feature.external_research = false` oder `controlled_test_only`
+
+**Feature Flags dürfen Sicherheits- und Datenschutzregeln nicht umgehen.** Ein Flag auf `true` entbindet nicht von Gate, Test, Audit.
+
+---
+
+## 13. Datenmodellregeln
+
+Jedes wichtige Objekt braucht:
+
+- `id`
+- `owner_user_id` oder `user_id` (falls nutzerbezogen)
+- `project_id` (falls projektbezogen)
+- `status`
+- `created_at`, `updated_at`
+- `sensitivity_level` (falls relevant)
+- `privacy_status` (falls relevant)
+- `security_status` (falls relevant)
+- `source_status` (falls relevant)
+- `expert_review_status` (falls relevant)
+
+**MVP-Objekte (geplant):**
+
+`user`, `user_profile_light`, `project`, `project_context_summary`, `task`, `workflow_basic`, `document`, `document_version`, `source_basic`, `risk`, `decision_light`, `agent_config`, `agent_run_summary`, `gate_result`, `audit_log`, `export_request`, `deletion_request`, `feature_flag`, `environment_config`.
+
+**Keine neuen Datenfelder ohne Zweck.** Datenminimierung gilt auch im Datenmodell.
+
+Detail: `DATA_MODEL.md`.
+
+---
+
+## 14. Dokumentenstatusregeln
+
+**Kein Dokument darf ohne Status erscheinen.** Dokumentstatus-Skala:
+
+- `draft`
+- `internal_use`
+- `source_required`
+- `expert_review_recommended`
+- `expert_review_required`
+- `privacy_review_required`
+- `security_review_required`
+- `blocked`
+- `archived`
+
+**Jedes MVP-Dokument braucht:** Zweck, Dokumenttyp, Version, Status, Quellenstatus, Fachprüfungsstatus, Datenschutzstatus, Sensibilitätsstufe, Exportwarnung (falls relevant).
+
+Dokumente mit Recht, Steuer, Förderung, Datenschutz oder Verträgen dürfen **niemals** als final oder garantiert korrekt erscheinen.
+
+Detail: `DOCUMENTS.md`.
+
+---
+
+## 15. Quellenstatusregeln
+
+Kritische Aussagen brauchen Quellenstatus. Skala:
+
+- `no_source_required`
+- `source_recommended`
+- `source_required`
+- `source_checked`
+- `source_outdated`
+- `source_conflict`
+- `not_decision_ready`
+
+**Quellenpflicht bei:** Recht, Steuern, Förderung, Datenschutzrecht, Behörden, Gebühren, Fristen, Versicherungen, Plattformregeln, Lizenzfragen, Preisen, aktuellen Gesetzen, aktuellen Programmen.
+
+**Wenn Quelle fehlt:** nicht als sicher formulieren, Quellenbedarf markieren, Fachprüfungsbedarf markieren, Aufgabe zur Prüfung erzeugen.
+
+**Keine erfundenen Quellen.** Keine stilisierten Scheinzitate.
+
+Detail: `SOURCES.md`.
+
+---
+
+## 16. Testpflichten
+
+Zentrale Funktionen brauchen Tests.
+
+**Pflichttests im MVP:**
+
+- Nutzer ohne Idee
+- Nutzer mit Idee
+- Finanzrisiko
+- Förderung
+- Datenschutzfall Kundendaten
+- Export sensibler Daten
+- Projektlöschung
+- Agentenrolle und Kontextminimierung
+- Prompt Injection
+- Umgebungstrennung
+
+**Zusätzliche Tests:**
+
+- Zugriffskontrolle, Statuslogik, Sensibilitätsstufen
+- Feature Flags, Quellenstatus, Fachprüfungsstatus
+- Dokumentenstatus, Exportwarnungen, Löschlogik
+- Keine Secrets in Logs
+
+Wenn Tests technisch noch nicht möglich sind, muss ein **Testplan** und ggf. ein **Blocker** dokumentiert werden. Jeder Run erstellt oder aktualisiert Tests bzw. einen Testplan.
+
+Detail: `TESTING.md`, `MVP_SPEC.md` §12 (MVP-Testfälle).
+
+---
+
+## 17. Release-Gates
+
+**Keine direkte Produktion aus Entwicklung.**
+
+**Development-to-Test-Gate (erforderlich):**
+
+- Zweck dokumentiert
+- MVP-Bezug geprüft
+- Datenschutz grob geprüft
+- Sicherheit grob geprüft
+- Feature Flag vorhanden
+- Testdaten synthetisch
+- keine echten Secrets
+- Basis-Tests vorhanden
+- Dokumentation aktualisiert
+
+**Test-to-Production-Gate (erforderlich):**
+
+- Tests bestanden
+- Datenschutz-Gate bestanden
+- Sicherheits-Gate bestanden
+- Quellenstatus geprüft (falls relevant)
+- Fachprüfungsstatus geprüft (falls relevant)
+- UI-Warnungen sichtbar
+- Export/Löschung geprüft (falls relevant)
+- Audit geprüft (falls relevant)
+- Rollback vorhanden
+- Monitoring vorhanden
+- keine Produktionsblocker offen
+
+Detail: `RELEASES.md`.
+
+---
