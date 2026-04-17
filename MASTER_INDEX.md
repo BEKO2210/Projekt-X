@@ -1,6 +1,8 @@
 # MASTER_INDEX.md — Zentrale Dokumentübersicht
 
-> **Status:** Konzept- und Architekturphase. Dieser Index verweist auf Dokumente, die teilweise nur Platzhalter sind. Vertiefung folgt in späteren Runs.
+> **Status:** Konzept- und Architekturphase (Phase 0 aktiv).
+> **Aktueller Stand:** Run 1 ✔ (Foundation), Run 2 aktiv (Vertiefung Kerndokumentation).
+> **Verbindlicher Name der Projektverfassung:** `KI_COMPANION_BLUEPRINT.md` (siehe `decisions/ADR-001-blueprint-filename.md`). Andere Bezeichnungen wie „PROJECT_BLUEPRINT.md" sind **nicht** gültig.
 
 ---
 
@@ -152,4 +154,38 @@ Alle Dokumente in diesem Repository tragen einen der folgenden Reifegrade:
 - **Implementiert:** Code existiert in späteren Phasen.
 - **Freigegeben:** durchlaufene Gates (Datenschutz, Sicherheit, Test).
 
-Stand Run 1: alle Dokumente sind **Konzept** oder **Entwurf**.
+Stand Run 2: Dokumente überwiegend **Entwurf**. Folgende Punkte sind **entschieden** (ADR oder Run-Report vorhanden):
+
+- Dateiname der Projektverfassung → `ADR-001-blueprint-filename.md`
+- CLAUDE.md-Struktur nach Blueprint Teil 37 → Run-Bericht Run 2
+- Abnahmekriterien-Skala für MVP → `MVP_SPEC.md` §10 (28 Kriterien A01–A28)
+- 10 MVP-Pflichttestfälle → `MVP_SPEC.md` §12
+
+---
+
+## 9. Run-Historie
+
+| Run | Name | Status | Bericht |
+|---|---|---|---|
+| 001 | Foundation | abgeschlossen | `reports/run-001-foundation.md` |
+| 002 | Vertiefung Kerndokumentation | aktiv (dieser Run) | `reports/run-002-deepen-core-docs.md` |
+
+---
+
+## 10. ADR-Register
+
+| ID | Titel | Status | Datum |
+|---|---|---|---|
+| ADR-001 | Dateiname der Projektverfassung | akzeptiert | 2026-04-17 |
+
+ADR-Vorlage: `decisions/ADR-template.md`.
+
+---
+
+## 11. Offene ADR-Kandidaten (nicht entschieden, nicht blockierend für Dokumentation)
+
+- Techstack (Sprache, Framework, Datenbank, Laufzeit) — **zwingend** vor Phase 1.
+- Test-Framework und CI-Pipeline — vor Phase 1.
+- Branch- und Deployment-Strategie — vor Phase 1.
+- Feature-Flag-Framework — vor oder mit Phase 1.
+- Lizenz (siehe `LICENSE.md`) — offen, nicht blockierend für Phase 0/1.
