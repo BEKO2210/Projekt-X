@@ -7,9 +7,14 @@
 
 ## Aktuelle Phase
 
-**Phase 0 — Projektgrundlage und Architekturverfassung.**
+**Phase 0 — Projektgrundlage und Architekturverfassung (aktiv).**
 
-Aktueller Fortschritt: Run 1 (Foundation) abgeschlossen. Siehe `reports/run-001-foundation.md`.
+Aktueller Fortschritt:
+
+- **Run 1 (Foundation) abgeschlossen.** Siehe `reports/run-001-foundation.md`.
+- **Run 2 (Vertiefung Kerndokumentation) aktiv.** Siehe `reports/run-002-deepen-core-docs.md`. Ziel: `CLAUDE.md` nach Blueprint Teil 37 ausbauen, `MVP_SPEC.md` um testbare Abnahmekriterien und 10 MVP-Testfälle ergänzen, `ROADMAP.md` Phase 1 strukturell vorbereiten, `MASTER_INDEX.md` aktualisieren, erste ADR anlegen.
+
+Phase 0 bleibt aktiv, solange Dokumentation nicht vollständig tragfähig ist und Techstack-ADR fehlt.
 
 ---
 
@@ -17,8 +22,8 @@ Aktueller Fortschritt: Run 1 (Foundation) abgeschlossen. Siehe `reports/run-001-
 
 | Phase | Ziel | Status |
 |---|---|---|
-| **Phase 0** | Projektgrundlage und Architekturverfassung | **aktiv** |
-| Phase 1 | Datenmodell, Umgebungen und Sicherheitsfundament | geplant |
+| **Phase 0** | Projektgrundlage und Architekturverfassung | **aktiv** (Run 1 ✔, Run 2 aktiv) |
+| Phase 1 | Datenmodell, Umgebungen und Sicherheitsfundament | geplant, strukturell vorbereitet (§ Phase 1 unten) |
 | Phase 2 | Projektakte, Aufgaben und Basis-UI | geplant |
 | Phase 3 | CEO-Orchestrator und Kernagenten | geplant |
 | Phase 4 | Dokumente, Quellenstatus und Export | geplant |
@@ -76,7 +81,62 @@ Aktueller Fortschritt: Run 1 (Foundation) abgeschlossen. Siehe `reports/run-001-
 
 ## Phase 1 — Datenmodell, Umgebungen und Sicherheitsfundament
 
-Technische Basis schaffen: Dev/Test/Prod-Umgebungen, Feature Flags basic, Datenmodell-Start (Nutzer, Projekt, Aufgabe, Dokument, Quelle, Risiko, Entscheidung, Gate-Ergebnis, Audit-Log), Sensibilitätsstufen, Zugriffskontrolle basic.
+**Ziel:** Technische Basis schaffen. Das System kann Kernobjekte sicher speichern, projektbezogen trennen und Status führen (Blueprint §33.6).
+
+**Voraussetzungen vor Phase 1 (Eintrittsgates):**
+
+- Phase 0 als abgeschlossen markiert.
+- Techstack-ADR in `decisions/` (Sprache, Framework, Datenbank, Laufzeit, Test-Framework). **Ohne diese ADR kein Phase-1-Start.**
+- `CLAUDE.md` enthält alle Teil-37-Kapitel (erfüllt in Run 2).
+- `MVP_SPEC.md` mit testbaren Abnahmekriterien (erfüllt in Run 2).
+- `DATA_MODEL.md` mit Objekten und Statusfeldern (erfüllt in Run 1).
+
+**Artefakte Phase 1:**
+
+- Entwicklungsumgebung (Dev)
+- Testumgebung (Test)
+- Produktionskonzept (Prod, noch nicht deployed)
+- Umgebungskonfiguration mit Trennung (siehe `config/README.md`)
+- Feature Flags basic (nach `CLAUDE.md` §12)
+- Datenmodell-Start in Code (passend zu `DATA_MODEL.md`):
+  - Nutzerobjekt (`user`, `user_profile_light`)
+  - Projektobjekt (`project`, `project_context_summary`)
+  - Aufgabenobjekt (`task`)
+  - Dokumentobjekt basic (`document`, `document_version`)
+  - Quellenobjekt basic (`source_basic`)
+  - Risikoobjekt basic (`risk`)
+  - Entscheidungsobjekt basic (`decision_light`)
+  - Gate-Ergebnis basic (`gate_result`)
+  - Audit-Log basic (`audit_log`)
+- Sensibilitätsstufen (`gering`/`mittel`/`hoch`/`sehr_hoch`)
+- Datenschutzstatus, Sicherheitsstatus, Quellenstatus als Enums
+- Zugriffskontrolle basic: `user_id`/`project_id`-Check auf jedem Objekt
+- Basis-Testsystem mit synthetischen Testdaten (in `testdata/`)
+- Erste Tests für: Zugriffskontrolle, Statuslogik, Umgebungstrennung, Secret-Scan
+
+**Erfolgskriterium Phase 1:**
+
+Kernobjekte können sicher gespeichert, projektbezogen getrennt und mit Status versehen werden. Tests für Zugriffskontrolle und Umgebungstrennung bestehen. Keine kritische Außenwirkung möglich.
+
+**Verlassen Phase 1 → Phase 2 möglich, wenn:**
+
+- Datenmodell in Code vorhanden und getestet.
+- Umgebungstrennung nachweisbar (Dev-Artefakt kann nicht Prod berühren).
+- Keine Secrets im Repo (automatischer Scan).
+- Keine echten Daten in Dev/Test (manuell geprüft).
+- Dev-to-Test-Gate existiert (noch nicht mit Inhalt befüllt).
+
+**Nicht-Ziele Phase 1** (aus `CLAUDE.md` §32 und Blueprint §33.7):
+
+- komplexe UI
+- vollständige Agenten
+- echte Integrationen
+- E-Mail-Automation
+- Zahlungsfunktionen
+- vollständiges CRM
+- umfangreiche Teamrollen
+- lizenzierte Fachquellen
+- komplexe RAG
 
 ---
 
