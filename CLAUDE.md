@@ -483,3 +483,183 @@ Detail: `TESTING.md`, `MVP_SPEC.md` §12 (MVP-Testfälle).
 Detail: `RELEASES.md`.
 
 ---
+
+## 18. Dokumentationspflicht
+
+Bei jeder Änderung prüfen, ob diese Dateien aktualisiert werden müssen:
+
+`README.md`, `CLAUDE.md`, `MVP_SPEC.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `DATA_MODEL.md`, `PRIVACY.md`, `SECURITY.md`, `COMPLIANCE.md`, `AGENTS.md`, `WORKFLOWS.md`, `DOCUMENTS.md`, `SOURCES.md`, `TESTING.md`, `RELEASES.md`, `MONITORING.md`, `BUSINESS_MODEL.md`, `MASTER_INDEX.md`.
+
+Spezifische Folgepflichten:
+
+- Neue Agenten → `AGENTS.md` und `prompts/` aktualisieren.
+- Neue Datenfelder → `DATA_MODEL.md` aktualisieren.
+- Neue Datenschutzverarbeitung → `PRIVACY.md` aktualisieren.
+- Neue Rechte oder Tools → `SECURITY.md` aktualisieren.
+- Neue Fachgrenze → `COMPLIANCE.md` aktualisieren.
+- Neue Dokumenttypen → `DOCUMENTS.md` aktualisieren.
+- Neue Quellenlogik → `SOURCES.md` aktualisieren.
+- Neue Tests → `TESTING.md` aktualisieren.
+- Neue Release-Regel → `RELEASES.md` aktualisieren.
+
+**Dokumentation darf keine Funktion als produktiv darstellen, wenn sie nur geplant ist.** Jeder Run aktualisiert die betroffene Dokumentation und erzeugt einen Run-Bericht in `reports/run-XXX-<name>.md`.
+
+---
+
+## 19. Run-Arbeitsablauf
+
+Jeder Claude-Code-Run folgt verbindlich diesem Ablauf (Blueprint §40.11 / §37.21):
+
+1. Aktuellen Run-Prompt lesen.
+2. `CLAUDE.md` lesen.
+3. `MASTER_INDEX.md` lesen (falls vorhanden).
+4. `MVP_SPEC.md` lesen.
+5. `ROADMAP.md` lesen.
+6. Betroffene Spezifikationen und Dokumente lesen.
+7. Vorhandene Dateien prüfen, **nicht blind überschreiben**.
+8. Scope des Runs begrenzen.
+9. Datenschutzrisiken prüfen.
+10. Sicherheitsrisiken prüfen.
+11. Quellenpflicht prüfen.
+12. Fachprüfungsbedarf prüfen.
+13. Änderungen durchführen.
+14. Tests erstellen oder Testplan dokumentieren.
+15. Tests ausführen, wenn technisch möglich.
+16. Dokumentation aktualisieren.
+17. Run-Bericht schreiben.
+18. Ergebnis gegen Ziel prüfen.
+19. Offene Punkte und Blocker dokumentieren.
+20. Erst danach den nächsten Run-Prompt schreiben.
+21. Den nächsten Run-Prompt **nicht selbst ausführen**.
+22. Auf ausdrücklichen Start warten.
+
+**Keine zusätzlichen Features ohne Auftrag.**
+
+---
+
+## 20. Produktionsblocker
+
+Eine Funktion darf **nicht** produktiv gehen, wenn einer dieser Punkte offen ist:
+
+- MVP-Scope unklar
+- Datenschutzprüfung fehlt
+- Sicherheitsprüfung fehlt
+- Zugriffskontrolle fehlt
+- `project_id` oder `user_id` nicht geprüft
+- sensible Daten unklassifiziert
+- Agenten sehen zu viele Daten
+- kritische Aktionen ohne Bestätigung möglich
+- Quellenpflicht ignoriert
+- Fachprüfungsbedarf fehlt
+- Dokumente ohne Status
+- Export oder Löschung unsicher
+- Testsystem fehlt
+- Feature Flags fehlen
+- Tests fehlen
+- Logs enthalten Secrets oder sensible Daten
+- echte Daten in Entwicklung oder Test
+- Integration ohne Freigabe aktiv
+- Fachberatung vorgetäuscht
+- Dokumentation fehlt oder falsch
+- Rollback fehlt (falls relevant)
+
+**Blocker bedeutet Stopp.** In diesem Fall schreibt Claude Code einen **Blocker-Prompt**, der ausschließlich die Blockerbehebung behandelt — kein normaler Fortschritts-Prompt.
+
+**Blocker-Prompt-Pflichtinhalte:** Verweis auf letzten Run-Bericht, Blockerbeschreibung, betroffene Dateien, Behebungsaufgabe, Verbot neuer Features, Verbot von UI/Agenten/Integrationen, Pflicht zu Datenschutz-/Sicherheitsprüfung, Testplanpflicht, neuer Run-Bericht.
+
+---
+
+## 21. Verbotene Abkürzungen
+
+Claude Code darf nicht:
+
+- „später Sicherheit ergänzen"
+- „später Datenschutz ergänzen"
+- „erstmal ohne Tests bauen"
+- „erstmal ohne Statuslogik bauen"
+- „erstmal ohne Dokumentation bauen"
+- „Frontend-Sperre als Zugriffskontrolle verwenden"
+- „Mock-Daten mit echten Daten mischen"
+- „Prompt ohne Rollenvertrag produktiv nutzen"
+- „Quellenstatus weglassen, weil es schneller geht"
+- „Fachprüfungsbedarf verstecken"
+- „Feature ohne Flag bauen, wenn riskant"
+- „Integration einbauen, weil technisch einfach"
+- „MVP-Nicht-Ziel trotzdem bauen"
+- „Produktionsfeature direkt aus Entwicklung aktivieren"
+- Runs 1–10 automatisch durchlaufen
+- mehrere Run-Prompts gleichzeitig ausführen
+- spätere Roadmap-Phasen vorziehen
+- Techstack eigenmächtig wählen (erfordert ADR in `decisions/`)
+
+Diese Abkürzungen sind **Projektfehler**, keine Beschleunigung.
+
+---
+
+## 22. Abschlussbericht pro Run
+
+Jeder Run endet mit einem Bericht in `reports/run-XXX-<name>.md`, der mindestens enthält:
+
+- Ziel des Runs
+- Gelesene Dateien
+- Änderungen
+- Datenschutzprüfung
+- Sicherheitsprüfung
+- Quellenprüfung
+- Fachprüfungsprüfung
+- Tests (ausgeführt oder als Testplan)
+- Ergebnis
+- Offene Punkte
+- Blocker
+- Nächster empfohlener Run (als Prompt-Vorschlag, **nicht** auszuführen)
+
+Vorlage: `templates/run_report_template.md`.
+
+---
+
+## 23. Umgang mit Unsicherheit
+
+Wenn Claude Code unsicher ist:
+
+- keine riskante Annahme als Wahrheit behandeln
+- Annahme dokumentieren
+- Scope begrenzen
+- sichere Defaults wählen
+- Quellenbedarf markieren
+- Fachprüfungsbedarf markieren
+- Funktion blockieren, wenn Risiko kritisch ist
+- offenen Punkt im Run-Bericht notieren
+
+Bei Unsicherheit zu Datenschutz, Sicherheit, Fachberatung oder Produktion gilt:
+
+**Lieber blockieren als riskant bauen.**
+
+---
+
+## 24. Umgang mit vorhandenen Dateien
+
+Wenn Dateien bereits existieren:
+
+- zuerst lesen
+- nicht blind überschreiben
+- Abweichungen dokumentieren
+- bestehende Struktur respektieren
+- Änderungen minimal halten
+- bei Konflikt ADR oder Notiz erstellen
+- keine Inhalte ohne Grund löschen
+- **keine Sicherheits- oder Datenschutzregeln entfernen**
+- **keine Produktionsblocker abschwächen**
+
+Bestehende Dokumentation ist Kontext — nicht Hindernis.
+
+---
+
+## 25. Umgang mit Code
+
+Code muss: modular sein, testbar sein, Statuslogik enthalten, Datenschutz-/Sicherheitsstatus berücksichtigen, Feature Flags beachten, Umgebung beachten, keine Secrets enthalten, keine echten Daten enthalten, klare Fehlerbehandlung haben, der Dokumentation entsprechen.
+
+Code darf nicht: produktive Daten in Entwicklung laden, fremde Projektdaten sichtbar machen, kritische Aktionen ohne Gate ermöglichen, Tests umgehen, Logs mit sensiblen Daten schreiben.
+
+**Stand aktuelle Phase: kein Code erlaubt**, bis Techstack-ADR in `decisions/` entschieden ist.
+
+---
